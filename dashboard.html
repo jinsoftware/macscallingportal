@@ -2,168 +2,127 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MACS Calling Dashboard</title>
-  <link rel="stylesheet" href="style.css">
+  <title>MACS Dial Pad</title>
   <style>
     body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
       background-color: #f0f4f8;
-    }
-
-    header {
-      background-color: #003366;
-      color: white;
-      padding: 16px;
-      text-align: center;
-      font-size: 24px;
-      font-weight: bold;
-    }
-
-    .container {
+      font-family: 'Segoe UI', sans-serif;
       display: flex;
-      flex-wrap: wrap;
-      padding: 20px;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+
+    h2 {
+      color: #003366;
+    }
+
+    .display {
+      width: 260px;
+      height: 50px;
+      font-size: 22px;
+      text-align: center;
+      margin-bottom: 20px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      background-color: white;
+    }
+
+    .dial-pad {
+      display: grid;
+      grid-template-columns: repeat(3, 80px);
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: #ffffff;
+      border: 2px solid #ccc;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .btn:hover {
+      background-color: #e6f0ff;
+    }
+
+    .call-controls {
+      display: flex;
       justify-content: center;
       gap: 20px;
     }
 
-    .card {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      width: 350px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    }
-
-    h2 {
-      text-align: center;
-      color: #003366;
-      margin-bottom: 20px;
-    }
-
-    .dialer input {
-      width: 100%;
-      padding: 12px;
-      font-size: 18px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-
-    .dialer button {
-      width: 100%;
-      padding: 12px;
-      background-color: #003366;
-      color: white;
-      font-size: 16px;
+    .call-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
       border: none;
-      border-radius: 8px;
+      font-size: 24px;
       cursor: pointer;
-    }
-
-    .sms textarea {
-      width: 100%;
-      padding: 10px;
-      height: 80px;
-      margin-top: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-
-    .sms input, .sms button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      font-size: 16px;
-    }
-
-    .sms button {
-      background-color: #004d99;
       color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
     }
 
-    .logs {
-      max-height: 200px;
-      overflow-y: auto;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 10px;
-      background-color: #f9f9f9;
+    .call {
+      background-color: #28a745;
     }
 
-    .log-entry {
-      padding: 6px;
-      border-bottom: 1px solid #ddd;
-      font-size: 14px;
-    }
-
-    .log-entry:last-child {
-      border-bottom: none;
-    }
-
-    .logout {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: #ff3333;
-      color: white;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
+    .hangup {
+      background-color: #dc3545;
     }
   </style>
 </head>
 <body>
 
-  <header>
-    📞 MACS Calling Portal
-    <button class="logout" onclick="window.location.href='index.html'">Log Out</button>
-  </header>
+  <h2>📞 MACS Dial Pad</h2>
 
-  <div class="container">
+  <input type="text" id="display" class="display" readonly placeholder="Enter number">
 
-    <!-- Dialer -->
-    <div class="card dialer">
-      <h2>📱 Dial a Number</h2>
-      <input type="text" id="call-number" placeholder="+1XXXXXXXXXX">
-      <button onclick="makeCall()">📞 Call Now</button>
-    </div>
+  <div class="dial-pad">
+    <button class="btn" onclick="press('1')">1</button>
+    <button class="btn" onclick="press('2')">2<br><small>ABC</small></button>
+    <button class="btn" onclick="press('3')">3<br><small>DEF</small></button>
+    <button class="btn" onclick="press('4')">4<br><small>GHI</small></button>
+    <button class="btn" onclick="press('5')">5<br><small>JKL</small></button>
+    <button class="btn" onclick="press('6')">6<br><small>MNO</small></button>
+    <button class="btn" onclick="press('7')">7<br><small>PQRS</small></button>
+    <button class="btn" onclick="press('8')">8<br><small>TUV</small></button>
+    <button class="btn" onclick="press('9')">9<br><small>WXYZ</small></button>
+    <button class="btn" onclick="press('*')">*</button>
+    <button class="btn" onclick="press('0')">0</button>
+    <button class="btn" onclick="press('#')">#</button>
+  </div>
 
-    <!-- SMS Sender -->
-    <div class="card sms">
-      <h2>💬 Send SMS</h2>
-      <input type="text" id="sms-number" placeholder="+1XXXXXXXXXX">
-      <textarea id="sms-message" placeholder="Type your message here..."></textarea>
-      <button onclick="sendSMS()">📨 Send Message</button>
-    </div>
-
-    <!-- Call & SMS Logs -->
-    <div class="card">
-      <h2>📝 Call & SMS Logs</h2>
-      <div class="logs" id="logs">
-        <div class="log-entry">No activity yet.</div>
-      </div>
-    </div>
-
+  <div class="call-controls">
+    <button class="call-btn call" onclick="makeCall()">📞</button>
+    <button class="call-btn hangup" onclick="hangUp()">✖</button>
   </div>
 
   <script>
-    function makeCall() {
-      const number = document.getElementById('call-number').value;
-      const logs = document.getElementById('logs');
-      logs.innerHTML += `<div class="log-entry">Calling ${number}...</div>`;
+    function press(num) {
+      const display = document.getElementById('display');
+      display.value += num;
     }
 
-    function sendSMS() {
-      const number = document.getElementById('sms-number').value;
-      const message = document.getElementById('sms-message').value;
-      const logs = document.getElementById('logs');
-      logs.innerHTML += `<div class="log-entry">Sent SMS to ${number}: "${message}"</div>`;
+    function makeCall() {
+      const number = document.getElementById('display').value;
+      if (number) {
+        alert('Calling: ' + number);
+        // SIP call function yahan connect hoga
+      } else {
+        alert('Enter a number first!');
+      }
+    }
+
+    function hangUp() {
+      document.getElementById('display').value = '';
+      alert('Call ended.');
+      // SIP hangup function yahan connect hoga
     }
   </script>
 
