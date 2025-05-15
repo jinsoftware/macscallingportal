@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>MACS Calling Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h2>📞 MACS Calling Dashboard</h2>
+    <button onclick="window.location.href='index.html'">Log Out</button>
+  </header>
+
+  <main class="dashboard">
+    <section class="call-section">
+      <h3>Make a Call</h3>
+      <input type="text" id="call-number" placeholder="+1XXXXXXXXXX">
+      <button onclick="makeCall()">Call</button>
+    </section>
+
+    <section class="sms-section">
+      <h3>Send SMS</h3>
+      <input type="text" id="sms-number" placeholder="+1XXXXXXXXXX">
+      <textarea id="sms-message" placeholder="Enter your message here..."></textarea>
+      <button onclick="sendSMS()">Send SMS</button>
+    </section>
+
+    <section class="log-section">
+      <h3>📋 Call & SMS Logs</h3>
+      <div id="logs">No activity yet.</div>
+    </section>
+  </main>
+
+  <script>
+    function makeCall() {
+      const num = document.getElementById('call-number').value;
+      document.getElementById('logs').innerHTML += `<p>Calling ${num}...</p>`;
+    }
+
+    function sendSMS() {
+      const num = document.getElementById('sms-number').value;
+      const msg = document.getElementById('sms-message').value;
+      document.getElementById('logs').innerHTML += `<p>SMS to ${num}: ${msg}</p>`;
+    }
+  </script>
+</body>
+</html>
