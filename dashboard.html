@@ -31,16 +31,17 @@
 
     h1 {
       text-align: center;
-      margin-top: 20px;
+      margin-top: 10px;
       color: #003366;
     }
 
     .display {
-      width: 260px;
-      height: 50px;
-      font-size: 22px;
+      width: 90%;
+      max-width: 300px;
+      height: 40px;
+      font-size: 20px;
       text-align: center;
-      margin: 20px auto;
+      margin: 10px auto;
       border: 2px solid #ccc;
       border-radius: 10px;
       padding: 10px;
@@ -49,26 +50,21 @@
 
     .dial-pad {
       display: grid;
-      grid-template-columns: repeat(3, 80px);
+      grid-template-columns: repeat(3, 1fr);
       gap: 10px;
       justify-content: center;
-      margin-bottom: 20px;
+      margin: 20px auto;
+      max-width: 300px;
     }
 
     .btn {
-      width: 80px;
-      height: 80px;
+      height: 70px;
       border-radius: 50%;
       background-color: #ffffff;
       border: 2px solid #ccc;
       font-size: 20px;
       font-weight: bold;
       cursor: pointer;
-      transition: all 0.2s ease-in-out;
-    }
-
-    .btn:hover {
-      background-color: #e6f0ff;
     }
 
     .call-controls {
@@ -87,15 +83,9 @@
       color: white;
     }
 
-    .call {
-      background-color: #28a745;
-    }
+    .call { background-color: #28a745; }
+    .hangup { background-color: #dc3545; }
 
-    .hangup {
-      background-color: #dc3545;
-    }
-
-    /* Sidebar Menu */
     .sidebar {
       height: 100%;
       width: 0;
@@ -115,7 +105,6 @@
       font-size: 20px;
       color: white;
       display: block;
-      transition: 0.2s;
     }
 
     .sidebar a:hover {
@@ -129,6 +118,31 @@
       font-size: 30px;
       cursor: pointer;
     }
+
+    #callStatus {
+      text-align: center;
+      color: green;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    #logTable {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      display: none;
+    }
+
+    #logTable th, #logTable td {
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: left;
+    }
+
+    #logTable th {
+      background-color: #003366;
+      color: white;
+    }
   </style>
 </head>
 <body>
@@ -141,17 +155,18 @@
   <h1>MACS Calling Portal</h1>
 
   <input type="text" id="display" class="display" readonly placeholder="Enter number">
+  <div id="callStatus"></div>
 
   <div class="dial-pad">
     <button class="btn" onclick="press('1')">1</button>
-    <button class="btn" onclick="press('2')">2<br><small>ABC</small></button>
-    <button class="btn" onclick="press('3')">3<br><small>DEF</small></button>
-    <button class="btn" onclick="press('4')">4<br><small>GHI</small></button>
-    <button class="btn" onclick="press('5')">5<br><small>JKL</small></button>
-    <button class="btn" onclick="press('6')">6<br><small>MNO</small></button>
-    <button class="btn" onclick="press('7')">7<br><small>PQRS</small></button>
-    <button class="btn" onclick="press('8')">8<br><small>TUV</small></button>
-    <button class="btn" onclick="press('9')">9<br><small>WXYZ</small></button>
+    <button class="btn" onclick="press('2')">2</button>
+    <button class="btn" onclick="press('3')">3</button>
+    <button class="btn" onclick="press('4')">4</button>
+    <button class="btn" onclick="press('5')">5</button>
+    <button class="btn" onclick="press('6')">6</button>
+    <button class="btn" onclick="press('7')">7</button>
+    <button class="btn" onclick="press('8')">8</button>
+    <button class="btn" onclick="press('9')">9</button>
     <button class="btn" onclick="press('*')">*</button>
     <button class="btn" onclick="press('0')">0</button>
     <button class="btn" onclick="press('#')">#</button>
@@ -165,29 +180,45 @@
   <!-- Sidebar Menu -->
   <div id="mySidebar" class="sidebar">
     <span class="closebtn" onclick="closeMenu()">×</span>
+    <a href="#" onclick="showLogs()">📋 View Call Logs</a>
     <a href="#">💬 Send Message</a>
-    <a href="#">📋 View Call Logs</a>
     <a href="#">🔒 Logout</a>
   </div>
+
+  <!-- Call Log Table -->
+  <table id="logTable">
+    <thead>
+      <tr><th>Number</th><th>Status</th><th>Time</th></tr>
+    </thead>
+    <tbody id="logBody"></tbody>
+  </table>
 
   <script>
     function press(num) {
       const display = document.getElementById('display');
       display.value += num;
+      document.getElementById('callStatus').textContent = '';
     }
 
     function makeCall() {
       const number = document.getElementById('display').value;
-      if (number) {
-        alert('Calling: ' + number);
+      const status = document.getElementById('callStatus');
+      if (number.length !== 10) {
+        status.style.color = 'red';
+        status.textContent = 'Invalid number. Please enter 10 digits.';
       } else {
-        alert('Enter a number first!');
+        status.style.color = 'green';
+        status.textContent = 'Calling ' + number + '...';
+        addLog(number, 'Calling');
       }
     }
 
     function hangUp() {
-      document.getElementById('display').value = '';
-      alert('Call ended.');
+      document.getElementById('callStatus').textContent = 'Call ended';
+      setTimeout(() => {
+        document.getElementById('callStatus').textContent = '';
+        document.getElementById('display').value = '';
+      }, 1500);
     }
 
     function openMenu() {
@@ -197,8 +228,18 @@
     function closeMenu() {
       document.getElementById("mySidebar").style.width = "0";
     }
-  </script>
 
+    function addLog(number, status) {
+      const now = new Date();
+      const time = now.toLocaleTimeString();
+      const row = `<tr><td>${number}</td><td>${status}</td><td>${time}</td></tr>`;
+      document.getElementById('logBody').innerHTML += row;
+    }
+
+    function showLogs() {
+      document.getElementById('logTable').style.display = 'table';
+      closeMenu();
+    }
+  </script>
 </body>
 </html>
-
