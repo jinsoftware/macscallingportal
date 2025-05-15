@@ -9,6 +9,7 @@
       margin: 0;
       font-family: 'Segoe UI', sans-serif;
       background-color: #f0f4f8;
+      overflow-x: hidden;
     }
 
     header {
@@ -48,7 +49,15 @@
       background-color: white;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+    }
+
+    .clear-btn {
+      font-size: 18px;
+      background: transparent;
+      border: none;
+      color: #dc3545;
+      cursor: pointer;
     }
 
     .dial-pad {
@@ -93,7 +102,7 @@
       height: 100%;
       width: 0;
       position: fixed;
-      z-index: 1;
+      z-index: 2;
       top: 0;
       right: 0;
       background-color: #003366;
@@ -129,11 +138,32 @@
       font-size: 18px;
     }
 
-    #logTable {
-      width: 90%;
-      margin: 20px auto;
-      border-collapse: collapse;
+    #logModal {
       display: none;
+      position: fixed;
+      z-index: 3;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+    }
+
+    #logModalContent {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    #logTable {
+      width: 100%;
+      border-collapse: collapse;
     }
 
     #logTable th, #logTable td {
@@ -157,7 +187,10 @@
 
   <h1>MACS Calling Portal</h1>
 
-  <div class="display" id="display">Enter number</div>
+  <div class="display">
+    <span id="display">Enter number</span>
+    <button class="clear-btn" onclick="deleteLastDigit()">×</button>
+  </div>
   <div id="callStatus"></div>
 
   <div class="dial-pad">
@@ -180,7 +213,6 @@
     <button class="call-btn hangup" onclick="hangUp()">✖</button>
   </div>
 
-  <!-- Sidebar Menu -->
   <div id="mySidebar" class="sidebar">
     <span class="closebtn" onclick="closeMenu()">×</span>
     <a href="#" onclick="showLogs()">📋 View Call Logs</a>
@@ -188,13 +220,17 @@
     <a href="#">🔒 Logout</a>
   </div>
 
-  <!-- Call Log Table -->
-  <table id="logTable">
-    <thead>
-      <tr><th>Number</th><th>Status</th><th>Time</th></tr>
-    </thead>
-    <tbody id="logBody"></tbody>
-  </table>
+  <div id="logModal">
+    <div id="logModalContent">
+      <h3>📋 Call Logs</h3>
+      <table id="logTable">
+        <thead>
+          <tr><th>Number</th><th>Status</th><th>Time</th></tr>
+        </thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </div>
+  </div>
 
   <script>
     function press(num) {
@@ -205,6 +241,16 @@
         display.textContent += num;
       }
       document.getElementById('callStatus').textContent = '';
+      new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_75e70fe2a1.mp3?filename=button-124476.mp3').play();
+    }
+
+    function deleteLastDigit() {
+      const display = document.getElementById('display');
+      if (display.textContent.length > 1) {
+        display.textContent = display.textContent.slice(0, -1);
+      } else {
+        display.textContent = 'Enter number';
+      }
     }
 
     function makeCall() {
@@ -217,6 +263,7 @@
       } else {
         status.style.color = 'green';
         status.textContent = 'Calling ' + number + '...';
+        new Audio('https://cdn.pixabay.com/download/audio/2022/10/16/audio_275d4ad39d.mp3?filename=telephone-ring-124699.mp3').play();
         addLog(number, 'Calling');
       }
     }
@@ -246,8 +293,15 @@
     }
 
     function showLogs() {
-      document.getElementById('logTable').style.display = 'table';
+      document.getElementById('logModal').style.display = 'flex';
       closeMenu();
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('logModal');
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
     }
   </script>
 </body>
