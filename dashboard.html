@@ -2,18 +2,36 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>MACS Dial Pad</title>
+  <title>MACS Calling Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
-      background-color: #f0f4f8;
+      margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 30px;
+      background-color: #f0f4f8;
     }
 
-    h2 {
+    header {
+      background-color: #003366;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      height: 40px;
+    }
+
+    .menu-icon {
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 20px;
       color: #003366;
     }
 
@@ -22,7 +40,7 @@
       height: 50px;
       font-size: 22px;
       text-align: center;
-      margin-bottom: 20px;
+      margin: 20px auto;
       border: 2px solid #ccc;
       border-radius: 10px;
       padding: 10px;
@@ -33,6 +51,7 @@
       display: grid;
       grid-template-columns: repeat(3, 80px);
       gap: 10px;
+      justify-content: center;
       margin-bottom: 20px;
     }
 
@@ -75,11 +94,51 @@
     .hangup {
       background-color: #dc3545;
     }
+
+    /* Sidebar Menu */
+    .sidebar {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      right: 0;
+      background-color: #003366;
+      overflow-x: hidden;
+      transition: 0.4s;
+      padding-top: 60px;
+    }
+
+    .sidebar a {
+      padding: 15px 25px;
+      text-decoration: none;
+      font-size: 20px;
+      color: white;
+      display: block;
+      transition: 0.2s;
+    }
+
+    .sidebar a:hover {
+      background-color: #00509e;
+    }
+
+    .closebtn {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 30px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
-  <h2>📞 MACS Dial Pad</h2>
+  <header>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Original_Macs_Logo.svg/2560px-Original_Macs_Logo.svg.png" class="logo" alt="MACS Logo">
+    <div class="menu-icon" onclick="openMenu()">☰</div>
+  </header>
+
+  <h1>MACS Calling Portal</h1>
 
   <input type="text" id="display" class="display" readonly placeholder="Enter number">
 
@@ -103,6 +162,14 @@
     <button class="call-btn hangup" onclick="hangUp()">✖</button>
   </div>
 
+  <!-- Sidebar Menu -->
+  <div id="mySidebar" class="sidebar">
+    <span class="closebtn" onclick="closeMenu()">×</span>
+    <a href="#">💬 Send Message</a>
+    <a href="#">📋 View Call Logs</a>
+    <a href="#">🔒 Logout</a>
+  </div>
+
   <script>
     function press(num) {
       const display = document.getElementById('display');
@@ -113,7 +180,6 @@
       const number = document.getElementById('display').value;
       if (number) {
         alert('Calling: ' + number);
-        // SIP call function yahan connect hoga
       } else {
         alert('Enter a number first!');
       }
@@ -122,9 +188,17 @@
     function hangUp() {
       document.getElementById('display').value = '';
       alert('Call ended.');
-      // SIP hangup function yahan connect hoga
+    }
+
+    function openMenu() {
+      document.getElementById("mySidebar").style.width = "250px";
+    }
+
+    function closeMenu() {
+      document.getElementById("mySidebar").style.width = "0";
     }
   </script>
 
 </body>
 </html>
+
